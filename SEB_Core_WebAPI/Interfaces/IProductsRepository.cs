@@ -1,0 +1,14 @@
+﻿using SEB_Core_WebAPI.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace SEB_Core_WebAPI.Interfaces
+{
+    public interface IProductsRepository
+    {
+        Task<IEnumerable<Product>> GetAllProductsAsync();
+        Task<Product> GetProductAsync(int productId);
+        //Task<IEnumerable<Product>> GetAvailableProductsAsync(int questionId);
+        Task<Product> DeleteProductAsync(int productId);
+    }
+}
