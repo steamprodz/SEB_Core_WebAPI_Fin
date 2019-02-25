@@ -57,9 +57,9 @@ namespace SEB_Core_WebAPI.Services
                     return new OkObjectResult(questions.Select(q => new QuestionViewModel()
                     {
                         Id = q.QuestionId,
-                        Age = q.Age.ToEnum(),
+                        Age = q.Age, //.ToEnum(),
                         IsStudent = q.IsStudent,
-                        Income = q.Income.ToEnum()
+                        Income = q.Income //.ToEnum()
 
                         
                         //ProductType = p.ProductType.ToEnum<AccountCardType>(),
@@ -90,9 +90,9 @@ namespace SEB_Core_WebAPI.Services
                     return new OkObjectResult(new QuestionViewModel()
                     {
                         Id = question.QuestionId,
-                        Age = question.Age.ToEnum(),
+                        Age = question.Age, //.ToEnum(),
                         IsStudent = question.IsStudent,
-                        Income = question.Income.ToEnum()
+                        Income = question.Income //.ToEnum()
 
                         //Sku = product.Sku.Trim(),
                         //Name = product.Name.Trim()
@@ -120,9 +120,9 @@ namespace SEB_Core_WebAPI.Services
                     return new OkObjectResult(new QuestionViewModel()
                     {
                         Id = question.QuestionId,
-                        Age = question.Age.ToEnum(),
+                        Age = question.Age, //.ToEnum(),
                         IsStudent = question.IsStudent,
-                        Income = question.Income.ToEnum()
+                        Income = question.Income //.ToEnum()
 
                         //Sku = product.Sku.Trim(),
                         //Name = product.Name.Trim()

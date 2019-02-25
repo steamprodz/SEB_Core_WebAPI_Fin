@@ -10,8 +10,10 @@ namespace SEB_Core_WebAPI.ViewModels
         //public enum IncomeType { Zero, OneToTwelveTh, TwelveThToFourtyThAndOne, FourtyThAndOnePlus }
 
         public long Id { get; set; }
-        public AgeType Age { get; set; }
+        //public AgeType Age { get; set; }
+        public int Age { get; set; }
         public bool IsStudent { get; set; }
-        public IncomeType Income { get; set; }
+        //public IncomeType Income { get; set; }
+        public long Income { get; set; }
     }
 }
