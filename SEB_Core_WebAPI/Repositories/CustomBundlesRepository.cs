@@ -100,5 +100,14 @@ namespace SEB_Core_WebAPI.Repositories
 
             // return 
         }
+
+        public async Task<CustomBundle> FindCustomBundle(Question question)
+        {
+            var q = await _context.Questions.Where(qq => qq.Age == question.Age && qq.IsStudent == question.IsStudent && qq.Income == question.Income).FirstOrDefaultAsync();
+
+            return await _context.CustomBundles.Where(cb => cb.QuestionId == q.QuestionId).FirstOrDefaultAsync();
+        }
+
+        public async Task<CustomBundle> CreateCustomBundle(Question question)
     }
 }
