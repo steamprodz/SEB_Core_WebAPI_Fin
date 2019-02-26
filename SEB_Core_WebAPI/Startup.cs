@@ -36,11 +36,13 @@ namespace SEB_Core_WebAPI
             services.AddScoped<IQuestionsRepository, QuestionsRepository>();
             services.AddScoped<IProductsRepository, ProductsRepository>();
             services.AddScoped<IBundlesRepository, BundlesRepository>();
+            services.AddScoped<ICustomBundlesRepository, CustomBundlesRepository>();
 
             // Services
             services.AddTransient<IQuestionsService, QuestionsService>();
             services.AddTransient<IProductsService, ProductsService>();
             services.AddTransient<IBundlesService, BundlesService>();
+            services.AddTransient<ICustomBundlesService, CustomBundlesService>();
 
             // MVC
             services.AddMvc();

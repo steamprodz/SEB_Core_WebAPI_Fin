@@ -8,7 +8,9 @@ namespace SEB_Core_WebAPI.Interfaces
     {
         Task<IEnumerable<Bundle>> GetAllBundlesAsync();
         Task<Bundle> GetBundleAsync(int BundleId);
-        //Task<Bundle> GetRecommendedBundleAsync(int questionId);
+        Task<Bundle> FindBundleAsync(string name);
         Task<Bundle> DeleteBundleAsync(int BundleId);
+
+        Task<IEnumerable<Product>> GetBundleProductsAsync(int bundleId);
     }
 }

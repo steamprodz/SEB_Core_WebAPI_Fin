@@ -53,6 +53,57 @@ namespace SEB_Core_WebAPI.Services
         //    }
         //}
 
+        public async Task<IActionResult> PostRecommendedBundleAsync(Question question)
+        {
+            //if (question.Income > 0 && question.Age > 17)
+            //{
+
+            //}
+            //else if (question.Income > 40000 && question.Age > 17)
+            //{
+
+            //}
+            //else if (question.Age < 18)
+
+            Bundle bundle = null;       
+
+            if (question.Income > 40000 && question.Age > 17)
+            {
+                bundle = await _bundlesRepository.FindBundleAsync("Gold");
+            }
+            else if (question.Income > 12000 && question.Age > 17)
+            {
+                bundle = await _bundlesRepository.FindBundleAsync("Classic Plus");
+            }
+            else if (question.Age > 17 && question.Income > 0)
+            {
+                bundle = await _bundlesRepository.FindBundleAsync("Classic");
+            }
+            else if (question.Age > 17 && question.IsStudent)
+            {
+                bundle = await _bundlesRepository.FindBundleAsync("Student");
+            }
+            else if (question.Age < 18)
+            {
+                bundle = await _bundlesRepository.FindBundleAsync("Junior Saver");
+            }
+
+            var products = await _bundlesRepository.GetBundleProductsAsync(bundle.BundleId);
+
+            List<ProductViewModel> productViewModelList = new List<ProductViewModel>();
+
+            foreach (var item in products)
+            {
+                productViewModelList.Add(new ProductViewModel()
+                {
+                    Id = item.ProductId,
+                    TypeName = item.Name
+                });
+            }
+
+            return new OkObjectResult(productViewModelList);
+        }
+
         public async Task<IActionResult> GetRecommendedBundleAsync(int questionId)
         {
             //try

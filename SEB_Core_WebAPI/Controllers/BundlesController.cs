@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SEB_Core_WebAPI.Interfaces;
+using SEB_Core_WebAPI.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -43,9 +44,23 @@ namespace SEB_Core_WebAPI.Controllers
 
         // POST api/bundles
         [HttpPost]
-        public void Post([FromBody]string value)
+        public async Task<IActionResult> PostRecommendedBundleAsync([FromBody]Question question)
         {
+            return await _bundlesService.PostRecommendedBundleAsync(question);
         }
+
+        // POST api/bundles/addproduct
+        [HttpPost("addproduct")]
+        public async Task<IActionResult> PostAddBundleAsync([FromBody]Question question)
+        {
+            return await _bundlesService.PostRecommendedBundleAsync(question);
+        }
+
+        //// POST api/bundles
+        //[HttpPost]
+        //public void Post([FromBody]string value)
+        //{
+        //}
 
         // PUT api/bundles/5
         [HttpPut("{id}")]

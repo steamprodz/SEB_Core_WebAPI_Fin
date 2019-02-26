@@ -7,8 +7,10 @@ namespace SEB_Core_WebAPI.Contexts
     {
         public virtual DbSet<Question> Questions { get; set; }
         public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<ProductType> ProductTypes { get; set; }
         public virtual DbSet<Bundle_Product> Bundle_Products { get; set; }
         public virtual DbSet<Bundle> Bundles { get; set; }
+        public virtual DbSet<CustomBundle> CustomBundles { get; set; }
 
         public DefaultContext(DbContextOptions<DefaultContext> options) : base(options)
         {

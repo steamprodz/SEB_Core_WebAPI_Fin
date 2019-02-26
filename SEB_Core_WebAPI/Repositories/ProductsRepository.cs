@@ -28,6 +28,18 @@ namespace SEB_Core_WebAPI.Repositories
             return await _context.Products.Where(p => p.ProductId == productId).FirstOrDefaultAsync();
         }
 
+        public async Task<Product> GetProductAsync(string productName)
+        {
+            return await _context.Products.Where(p => p.Name == productName).FirstOrDefaultAsync();
+        }
+
+        public async Task<ProductType> GetProductTypeAsync(string productName)
+        {
+            var product = await _context.Products.Where(p => p.Name == productName).FirstOrDefaultAsync();
+
+            return await _context.ProductTypes.Where(pt => pt.Id == product.ProductTypeId).FirstOrDefaultAsync();
+        }
+
         public async Task<Product> DeleteProductAsync(int productId)
         {
             Product product = await GetProductAsync(productId);
