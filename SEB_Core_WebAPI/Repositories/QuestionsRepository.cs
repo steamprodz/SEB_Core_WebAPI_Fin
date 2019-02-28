@@ -17,12 +17,10 @@ namespace SEB_Core_WebAPI.Repositories
             _context = context;
         }
 
-
         public async Task<IEnumerable<Question>> GetAllQuestionsAsync()
         {
             return await _context.Questions.ToListAsync();
         }
-
 
         // Get question by Id
         public async Task<Question> GetQuestionAsync(int questionId)

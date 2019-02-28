@@ -8,9 +8,6 @@ namespace SEB_Core_WebAPI.Interfaces
     {
         Task<IActionResult> GetAllBundlesAsync();
         Task<IActionResult> GetBundleAsync(int bundleId);
-        Task<IActionResult> GetRecommendedBundleAsync(int questionId);
         Task<IActionResult> DeleteBundleAsync(int bundleId);
-
-        Task<IActionResult> PostRecommendedBundleAsync(Question question);
     }
 }

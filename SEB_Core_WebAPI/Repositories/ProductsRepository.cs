@@ -17,7 +17,6 @@ namespace SEB_Core_WebAPI.Repositories
             _context = context;
         }
 
-
         public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
             return await _context.Products.ToListAsync();
@@ -53,18 +52,5 @@ namespace SEB_Core_WebAPI.Repositories
 
             return product;
         }
-
-        //public async Task<IEnumerable<Product>> GetAvailableProductsAsync(int questionId)
-        //{
-        //    Question question = await _context.Questions.Where(q => q.QuestionId == questionId).FirstOrDefaultAsync();
-
-        //    ///// Some logic
-        //    if (question.Age == 0)
-        //        return new Product[] { new Product { ProductType = Product.AccountCardType.CreditCard }, new Product { ProductType = Product.AccountCardType.CurrentAccount } };
-            
-
-        //    return new Product[] { new Product { ProductType = Product.AccountCardType.CreditCard }, new Product { ProductType = Product.AccountCardType.CurrentAccount } };
-        //    /////
-        //}
     }
 }

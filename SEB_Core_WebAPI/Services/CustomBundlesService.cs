@@ -27,17 +27,17 @@ namespace SEB_Core_WebAPI.Services
 
         //public async Task<IActionResult> GetRecommendedBundleAsync(int questionId)
         //{
-        //    try
-        //    {
-        //        Bundle bundle = await _bundlesRepository.GetRecommendedBundleAsync(questionId);
+        //    //try
+        //    //{
+        //        //Bundle bundle = await _bundlesRepository.GetRecommendedBundleAsync(questionId);
+        //        Bundle bundle = await _bundlesRepository.GetBundleAsync(questionId);
 
         //        if (bundle != null)
         //        {
         //            return new OkObjectResult(new BundleViewModel()
         //            {
         //                Id = bundle.BundleId,
-        //                // TODO
-        //                ProductList = new List<ProductViewModel>(),
+        //                Name = bundle.Name,
         //                Value = bundle.Value
 
         //                //Sku = p.Sku.Trim(),
@@ -48,123 +48,46 @@ namespace SEB_Core_WebAPI.Services
         //        {
         //            return new NotFoundResult();
         //        }
-        //    }
-        //    catch
-        //    {
-        //        return new ConflictResult();
-        //    }
+        //    //}
+        //    //catch
+        //    //{
+        //    //    return new ConflictResult();
+        //    //}
         //}
 
-        //public async Task<IActionResult> PostRecommendedBundleAsync(Question question)
-        //{
-        //    //if (question.Income > 0 && question.Age > 17)
-        //    //{
-
-        //    //}
-        //    //else if (question.Income > 40000 && question.Age > 17)
-        //    //{
-
-        //    //}
-        //    //else if (question.Age < 18)
-
-        //    Bundle bundle = null;       
-
-        //    if (question.Income > 40000 && question.Age > 17)
-        //    {
-        //        bundle = await _bundlesRepository.FindBundleAsync("Gold");
-        //    }
-        //    else if (question.Income > 12000 && question.Age > 17)
-        //    {
-        //        bundle = await _bundlesRepository.FindBundleAsync("Classic Plus");
-        //    }
-        //    else if (question.Age > 17 && question.Income > 0)
-        //    {
-        //        bundle = await _bundlesRepository.FindBundleAsync("Classic");
-        //    }
-        //    else if (question.Age > 17 && question.IsStudent)
-        //    {
-        //        bundle = await _bundlesRepository.FindBundleAsync("Student");
-        //    }
-        //    else if (question.Age < 18)
-        //    {
-        //        bundle = await _bundlesRepository.FindBundleAsync("Junior Saver");
-        //    }
-
-        //    var products = await _bundlesRepository.GetBundleProductsAsync(bundle.BundleId);
-
-        //    List<ProductViewModel> productViewModelList = new List<ProductViewModel>();
-
-        //    foreach (var item in products)
-        //    {
-        //        productViewModelList.Add(new ProductViewModel()
-        //        {
-        //            Id = item.ProductId,
-        //            TypeName = item.Name
-        //        });
-        //    }
-
-        //    return new OkObjectResult(productViewModelList);
-        //}
-
-        public async Task<IActionResult> GetRecommendedBundleAsync(int questionId)
+        public async Task<IActionResult> GetAllCustomBundlesAsync()
         {
-            //try
-            //{
-                //Bundle bundle = await _bundlesRepository.GetRecommendedBundleAsync(questionId);
-                Bundle bundle = await _bundlesRepository.GetBundleAsync(questionId);
+            try
+            {
+                var customBundles = await _customBundlesRepository.GetAllCustomBundlesAsync();
 
-                if (bundle != null)
+                if (customBundles != null)
                 {
-                    return new OkObjectResult(new BundleViewModel()
+                    List<CustomBundleViewModel> result = new List<CustomBundleViewModel>();
+
+                    foreach (var customBundle in customBundles)
                     {
-                        Id = bundle.BundleId,
-                        Name = bundle.Name,
-                        Value = bundle.Value
+                        var products = await _customBundlesRepository.GetCustomBundleProductsAsync(customBundle.CustomBundleId);
 
-                        //Sku = p.Sku.Trim(),
-                        //Name = p.Name.Trim()
-                    });
-                }
-                else
-                {
-                    return new NotFoundResult();
-                }
-            //}
-            //catch
-            //{
-            //    return new ConflictResult();
-            //}
-        }
-
-        public async Task<IActionResult> GetAllBundlesAsync()
-        {
-            //try
-            //{
-                IEnumerable<Bundle> bundles = await _bundlesRepository.GetAllBundlesAsync();
-
-                if (bundles != null)
-                {
-                    return new OkObjectResult(bundles.Select(b => new BundleViewModel()
-                    {
-                        Id = b.BundleId,
-                        Name = b.Name,
-                        Value = b.Value
-
-                        //ProductType = p.ProductType.ToEnum<AccountCardType>(),
-                        //Sku = p.Sku.Trim(),
-                        //Name = p.Name.Trim()
+                        result.Add(new CustomBundleViewModel
+                        {
+                            Id = customBundle.CustomBundleId,
+                            DefaultBundleId = customBundle.BundleId,
+                            Products = this.ProductsToViewModels(products)
+                        });
                     }
-                    ));
+
+                    return new OkObjectResult(result);
                 }
                 else
                 {
-                    return new NotFoundResult();
+                    return new NotFoundObjectResult("No Custom Bundles available");
                 }
-            //}
-            //catch
-            //{
-            //    return new ConflictResult();
-            //}
+            }
+            catch
+            {
+                return new ConflictResult();
+            }
         }
 
         //public async Task<IActionResult> PostRecommendedCustomBundleAsync(Question question)
@@ -215,103 +138,67 @@ namespace SEB_Core_WebAPI.Services
         //    });
         //}
 
-        public async Task<IActionResult> GetCustomBundleAsync(int bundleId)
+        public async Task<IActionResult> GetCustomBundleAsync(int customBundleId)
         {
-            //try
-            //{
-            CustomBundle customBundle = await _customBundlesRepository.GetCustomBundleAsync(bundleId);
-
-            var products = await _customBundlesRepository.GetCustomBundleProductsAsync(customBundle.CustomBundleId);
-
-            if (customBundle != null)
+            try
             {
-                return new OkObjectResult(new CustomBundleViewModel()
-                {
-                    Id = customBundle.CustomBundleId,
-                    DefaultBundleId = customBundle.BundleId,
-                    Products = this.ProductsToViewModels(products)
-                });
-            }
-            else
-            {
-                return new NotFoundResult();
-            }
-        }
+                CustomBundle customBundle = await _customBundlesRepository.GetCustomBundleAsync(customBundleId);
 
-        public async Task<IActionResult> DeleteBundleAsync(int bundleId)
-        {
-            //try
-            //{
-                Bundle bundle = await _bundlesRepository.DeleteBundleAsync(bundleId);
+                var products = await _customBundlesRepository.GetCustomBundleProductsAsync(customBundle.CustomBundleId);
 
-                if (bundle != null)
+                if (customBundle != null)
                 {
-                    return new OkObjectResult(new BundleViewModel()
+                    return new OkObjectResult(new CustomBundleViewModel()
                     {
-                        Id = bundle.BundleId,
-                        Name = bundle.Name,
-                        Value = bundle.Value
-
-                        //Sku = product.Sku.Trim(),
-                        //Name = product.Name.Trim()
+                        Id = customBundle.CustomBundleId,
+                        DefaultBundleId = customBundle.BundleId,
+                        Products = this.ProductsToViewModels(products)
                     });
                 }
                 else
                 {
                     return new NotFoundResult();
                 }
-            //}
-            //catch
-            //{
-            //    return new ConflictResult();
-            //}
+            }
+            catch
+            {
+                return new ConflictResult();
+            }
         }
 
-        public Task<IActionResult> GetAllCustomBundlesAsync()
+        public async Task<IActionResult> DeleteBundleAsync(int customBundleId)
         {
-            throw new NotImplementedException();
-        }
+            try
+            {
+                CustomBundle customBundle = await _customBundlesRepository.DeleteCustomBundleAsync(customBundleId);
 
-        public Task<IActionResult> UpdateCustomBundleAsync(int bundleId)
-        {
-            throw new NotImplementedException();
+                if (customBundle != null)
+                {
+                    var products = await _customBundlesRepository.GetCustomBundleProductsAsync(customBundleId);
+
+                    return new OkObjectResult(new CustomBundleViewModel()
+                    {
+                        Id = customBundle.CustomBundleId,
+                        DefaultBundleId = customBundle.BundleId,
+                        Products = this.ProductsToViewModels(products)
+                    });
+                }
+                else
+                {
+                    return new NotFoundResult();
+                }
+            }
+            catch
+            {
+                return new ConflictResult();
+            }
         }
 
         public async Task<IActionResult> PostRecommendedBundleAsync(QuestionViewModel qvm)
         {
             try
             {
-                //CustomBundle cb;
-                //IEnumerable<Product> products;
-                //List<ProductViewModel> pvmList;
-                //Question q = await _questionsRepository.GetQuestionAsync(qvm.Age, qvm.IsStudent, qvm.Income);
-
-                //if (q != null)
-                //{
-                //    cb = await _customBundlesRepository.FindCustomBundleAsync(q.QuestionId);
-
-                //    if (cb != null)
-                //    {
-                //        products = await _customBundlesRepository.GetCustomBundleProductsAsync(cb.CustomBundleId);
-
-                //        pvmList = new List<ProductViewModel>();
-
-                //        foreach (var p in products)
-                //        {
-                //            pvmList.Add(new ProductViewModel { Id = p.ProductId, Name = p.Name });
-                //        }
-
-                //        return new OkObjectResult(new CustomBundleViewModel()
-                //        {
-                //            Id = cb.CustomBundleId,
-                //            DefaultBundleId = cb.BundleId,
-                //            Products = pvmList
-                //        });
-                //    }
-                //}
-
                 // Create question
-                //if (q == null)
                 Question q = await _questionsRepository.AddQuestionAsync(qvm.Age, qvm.IsStudent, qvm.Income);
 
                 // Find default bundle
@@ -321,16 +208,20 @@ namespace SEB_Core_WebAPI.Services
                 // Get products
                 var products = await _bundlesRepository.GetBundleProductsAsync(defaultBundle.BundleId);
 
-                return new OkObjectResult(new CustomBundleViewModel()
+                var res = new ObjectResult(new CustomBundleViewModel()
                 {
                     Id = cb.CustomBundleId,
                     DefaultBundleId = cb.BundleId,
                     Products = this.ProductsToViewModels(products)
                 });
+
+                res.StatusCode = 201;
+
+                return res;
             }
             catch (Exception ex)
             {
-                return new BadRequestResult();
+                return new NotFoundResult();
             }
         }
 
@@ -346,7 +237,7 @@ namespace SEB_Core_WebAPI.Services
             return pvmList;
         }
 
-        public async Task<CustomBundle> AddCustomBundleAsync(int questionId, int defaultBundleId)
+        private async Task<CustomBundle> AddCustomBundleAsync(int questionId, int defaultBundleId)
         {
             // Create new CB
             var cb = await _customBundlesRepository.AddCustomBundleAsync(questionId, defaultBundleId);
@@ -363,7 +254,7 @@ namespace SEB_Core_WebAPI.Services
             return cb;
         }
 
-        public async Task<Bundle> FindDefaultBundleAsync(Question q)
+        private async Task<Bundle> FindDefaultBundleAsync(Question q)
         {
             //Bundle bundle = null;
 
@@ -393,106 +284,125 @@ namespace SEB_Core_WebAPI.Services
 
         public async Task<IActionResult> FindDefaultBundle(QuestionViewModel qvm)
         {
-            Bundle bundle = null;
+            try
+            {
+                Bundle bundle = null;
 
-            if (qvm.Income > 40000 && qvm.Age > 17)
-            {
-                bundle = await _bundlesRepository.FindBundleAsync("Gold");
-            }
-            else if (qvm.Income > 12000 && qvm.Age > 17)
-            {
-                bundle = await _bundlesRepository.FindBundleAsync("Classic Plus");
-            }
-            else if (qvm.Age > 17 && qvm.Income > 0)
-            {
-                bundle = await _bundlesRepository.FindBundleAsync("Classic");
-            }
-            else if (qvm.Age > 17 && qvm.IsStudent)
-            {
-                bundle = await _bundlesRepository.FindBundleAsync("Student");
-            }
-            else if (qvm.Age < 18)
-            {
-                bundle = await _bundlesRepository.FindBundleAsync("Junior Saver");
-            }
-
-            var products = await _bundlesRepository.GetBundleProductsAsync(bundle.BundleId);
-
-            List<ProductViewModel> productViewModelList = new List<ProductViewModel>();
-
-            foreach (var item in products)
-            {
-                productViewModelList.Add(new ProductViewModel()
+                if (qvm.Income > 40000 && qvm.Age > 17)
                 {
-                    Id = item.ProductId,
-                    Name = item.Name
-                });
-            }
+                    bundle = await _bundlesRepository.FindBundleAsync("Gold");
+                }
+                else if (qvm.Income > 12000 && qvm.Age > 17)
+                {
+                    bundle = await _bundlesRepository.FindBundleAsync("Classic Plus");
+                }
+                else if (qvm.Age > 17 && qvm.Income > 0)
+                {
+                    bundle = await _bundlesRepository.FindBundleAsync("Classic");
+                }
+                else if (qvm.Age > 17 && qvm.IsStudent)
+                {
+                    bundle = await _bundlesRepository.FindBundleAsync("Student");
+                }
+                else if (qvm.Age < 18)
+                {
+                    bundle = await _bundlesRepository.FindBundleAsync("Junior Saver");
+                }
 
-            return new OkObjectResult(productViewModelList);
+                var products = await _bundlesRepository.GetBundleProductsAsync(bundle.BundleId);
+
+                List<ProductViewModel> productViewModelList = new List<ProductViewModel>();
+
+                foreach (var item in products)
+                {
+                    productViewModelList.Add(new ProductViewModel()
+                    {
+                        Id = item.ProductId,
+                        Name = item.Name
+                    });
+                }
+
+                return new OkObjectResult(productViewModelList);
+            }
+            catch
+            {
+                return new NotFoundResult();
+            }
         }
 
         public async Task<IActionResult> PostAddProductToBundleAsync(int customBundleId, string productName)
         {
-            var cb = await _customBundlesRepository.GetCustomBundleAsync(customBundleId);
-            var q = await _questionsRepository.GetQuestionAsync(cb.QuestionId);
-            var p = await _productsRepository.GetProductAsync(productName);
-            var products = await _customBundlesRepository.GetCustomBundleProductsAsync(customBundleId);
-
-            // Check if such product is already in bundle
-            var sameProduct = products.Where(pp => pp.ProductId == p.ProductId);
-            if (sameProduct != null)
-                return new BadRequestResult();
-
-            // Check if there no more than 1 Account product
-            var pt = await _productsRepository.GetProductTypeAsync(p.ProductId);
-
-            if (pt.TypeName == "Account")
+            try
             {
-                var productAcc = products.Where(pp => pp.ProductTypeId == pt.Id).FirstOrDefault();
+                var cb = await _customBundlesRepository.GetCustomBundleAsync(customBundleId);
+                var q = await _questionsRepository.GetQuestionAsync(cb.QuestionId);
+                var p = await _productsRepository.GetProductAsync(productName);
+                var products = await _customBundlesRepository.GetCustomBundleProductsAsync(customBundleId);
 
-                if (productAcc != null)
-                    return new BadRequestResult();
+                // Check if such product is already in bundle
+                var sameProduct = products.Where(pp => pp.ProductId == p.ProductId);
+                if (sameProduct != null)
+                    return new NotFoundResult();
+
+                // Check if there no more than 1 Account product
+                var pt = await _productsRepository.GetProductTypeAsync(p.ProductId);
+
+                if (pt.TypeName == "Account")
+                {
+                    var productAcc = products.Where(pp => pp.ProductTypeId == pt.Id).FirstOrDefault();
+
+                    if (productAcc != null)
+                        return new NotFoundResult();
+                }
+
+                int accCount = products.Count(pp => pp.ProductTypeId == pt.Id);
+                bool checkIfAccPresent = false;
+
+                bool isConflictResult = false;
+
+                switch (p.Name)
+                {
+                    case "Current Account":
+                        if (q.Income <= 0 || q.Age <= 17)
+                            isConflictResult = true;
+                        break;
+                    case "Current Account Plus":
+                        if (q.Income <= 40000 || q.Age <= 17)
+                            isConflictResult = true;
+                        break;
+                    case "Junior Saver Account":
+                        if (q.Age >= 18)
+                            isConflictResult = true;
+                        break;
+                    case "Student Account":
+                        if (!q.IsStudent || q.Age <= 17)
+                            isConflictResult = true;
+                        break;
+                    case "Debit Card":
+                        checkIfAccPresent = true;
+                        break;
+                    case "Credit Card":
+                        if (q.Income <= 12000 || q.Age <= 17)
+                            isConflictResult = true;
+                        break;
+                    case "Gold Credit Card":
+                        if (q.Income <= 40000 || q.Age <= 17)
+                            isConflictResult = true;
+                        break;
+                }
+
+                if (isConflictResult)
+                    return new ConflictObjectResult(String.Format("{0} product is not valid for selected answers", p.Name));
+
+                if (checkIfAccPresent && accCount == 0)
+                    return new ConflictObjectResult("Debit Card cannot be added without having an account");
+
+                return new OkResult();
             }
-
-            int accCount = products.Count(pp => pp.ProductTypeId == pt.Id);
-            bool checkIfAccPresent = false;
-
-            switch (p.Name)
+            catch
             {
-                case "Current Account":
-                    if (q.Income <= 0 || q.Age <= 17)
-                        return new BadRequestResult();
-                    break;
-                case "Current Account Plus":
-                    if (q.Income <= 40000 || q.Age <= 17)
-                        return new BadRequestResult();
-                    break;
-                case "Junior Saver Account":
-                    if (q.Age >= 18)
-                        return new BadRequestResult();
-                    break;
-                case "Student Account":
-                    if (!q.IsStudent || q.Age <= 17)
-                        return new BadRequestResult();
-                    break;
-                case "Debit Card":
-                    checkIfAccPresent = true;
-                    break;
-                case "Credit Card":
-                    if (q.Income <= 12000 || q.Age <= 17)
-                        return new BadRequestResult();
-                    break;
-                case "Gold Credit Card":
-                    if (q.Income <= 40000 || q.Age <= 17)
-                        return new BadRequestResult();
-                    break;
+                return new ConflictResult();
             }
-
-            if (checkIfAccPresent && accCount == 0)
-                return new BadRequestResult();
-
-            return new OkResult();
         }
 
         private async Task<IActionResult> ValidateNewProduct(IEnumerable<Product> products, Question question, Product newProduct)
@@ -555,129 +465,171 @@ namespace SEB_Core_WebAPI.Services
 
         public async Task<IActionResult> PutUpdateProductInCustomBundleAsync(int customBundleId, string oldProductName, string newProductName)
         {
-            var cb = await _customBundlesRepository.GetCustomBundleAsync(customBundleId);
-            var q = await _questionsRepository.GetQuestionAsync(cb.QuestionId);
-            var products = await _customBundlesRepository.GetCustomBundleProductsAsync(customBundleId);
-
-            var oldProduct = products.Where(pp => pp.Name == oldProductName).FirstOrDefault();
-            var newProduct = products.Where(pp => pp.Name == newProductName).FirstOrDefault();
-
-            // Check if there no more than 1 Account product
-            var pt = await _productsRepository.GetProductTypeAsync(newProduct.ProductId);
-
-            if (pt.TypeName == "Account")
+            try
             {
-                var productAcc = products.Where(pp => pp.ProductTypeId == pt.Id).FirstOrDefault();
+                var cb = await _customBundlesRepository.GetCustomBundleAsync(customBundleId);
+                var q = await _questionsRepository.GetQuestionAsync(cb.QuestionId);
+                var products = await _customBundlesRepository.GetCustomBundleProductsAsync(customBundleId);
 
-                if (productAcc != null)
-                    return new BadRequestResult();
-            }
+                var oldProduct = products.Where(pp => pp.Name == oldProductName).FirstOrDefault();
+                var newProduct = products.Where(pp => pp.Name == newProductName).FirstOrDefault();
 
-            int accCount = products.Count(pp => pp.ProductTypeId == pt.Id);
-            bool checkIfAccPresent = false;
+                // Check if there no more than 1 Account product
+                var pt = await _productsRepository.GetProductTypeAsync(newProduct.ProductId);
 
-            switch (newProduct.Name)
-            {
-                case "Current Account":
-                    if (q.Income <= 0 || q.Age <= 17)
+                if (pt.TypeName == "Account")
+                {
+                    var productAcc = products.Where(pp => pp.ProductTypeId == pt.Id).FirstOrDefault();
+
+                    if (productAcc != null)
                         return new BadRequestResult();
-                    break;
-                case "Current Account Plus":
-                    if (q.Income <= 40000 || q.Age <= 17)
-                        return new BadRequestResult();
-                    break;
-                case "Junior Saver Account":
-                    if (q.Age >= 18)
-                        return new BadRequestResult();
-                    break;
-                case "Student Account":
-                    if (!q.IsStudent || q.Age <= 17)
-                        return new BadRequestResult();
-                    break;
-                case "Debit Card":
-                    checkIfAccPresent = true;
-                    break;
-                case "Credit Card":
-                    if (q.Income <= 12000 || q.Age <= 17)
-                        return new BadRequestResult();
-                    break;
-                case "Gold Credit Card":
-                    if (q.Income <= 40000 || q.Age <= 17)
-                        return new BadRequestResult();
-                    break;
-            }
+                }
 
-            if (checkIfAccPresent && accCount == 0)
-                return new BadRequestResult();
+                int accCount = products.Count(pp => pp.ProductTypeId == pt.Id);
+                bool checkIfAccPresent = false;
 
-            await _customBundlesRepository.UpdateProductInCustomBundleAsync(customBundleId, oldProduct.ProductId, newProduct.ProductId);
+                bool isConflictResult = false;
 
-            return new OkResult();
-        }
-
-        public async Task<IActionResult> DeleteProductInCustomBundleAsync(int customBundleId, string productName)
-        {
-            var p = await _productsRepository.GetProductAsync(productName);
-
-            await _customBundlesRepository.DeleteProductInCustomBundleAsync(customBundleId, p.ProductId);
-
-            return new OkResult();
-        }
-
-        public async Task<IActionResult> PostValidateCustomBundle(CustomBundleViewModel cbvm, QuestionViewModel qvm)
-        {
-            //var cb = await this.GetCustomBundleAsync(cbvm.Id);
-            //var products = await _customBundlesRepository.GetCustomBundleProductsAsync(cbvm.Id);
-
-            var products = cbvm.Products;
-
-            int accountCount = 0;
-            bool checkIfAccPresent = false;
-
-            foreach (var p in products)
-            {
-                switch (p.Name)
+                switch (newProduct.Name)
                 {
                     case "Current Account":
-                        if (qvm.Income <= 0 || qvm.Age <= 17)
-                            return new BadRequestResult();
-                        accountCount++;
+                        if (q.Income <= 0 || q.Age <= 17)
+                            isConflictResult = true;
                         break;
                     case "Current Account Plus":
-                        if (qvm.Income <= 40000 || qvm.Age <= 17)
-                            return new BadRequestResult();
-                        accountCount++;
+                        if (q.Income <= 40000 || q.Age <= 17)
+                            isConflictResult = true;
                         break;
                     case "Junior Saver Account":
-                        if (qvm.Age >= 18)
-                            return new BadRequestResult();
-                        accountCount++;
+                        if (q.Age >= 18)
+                            isConflictResult = true;
                         break;
                     case "Student Account":
-                        if (!qvm.IsStudent || qvm.Age <= 17)
-                            return new BadRequestResult();
-                        accountCount++;
+                        if (!q.IsStudent || q.Age <= 17)
+                            isConflictResult = true;
                         break;
                     case "Debit Card":
                         checkIfAccPresent = true;
                         break;
                     case "Credit Card":
-                        if (qvm.Income <= 12000 || qvm.Age <= 17)
-                            return new BadRequestResult();
+                        if (q.Income <= 12000 || q.Age <= 17)
+                            isConflictResult = true;
                         break;
                     case "Gold Credit Card":
-                        if (qvm.Income <= 40000 || qvm.Age <= 17)
-                            return new BadRequestResult();
+                        if (q.Income <= 40000 || q.Age <= 17)
+                            isConflictResult = true;
                         break;
                 }
+
+                if (isConflictResult)
+                    return new ConflictObjectResult(String.Format("{0} product is not valid for selected answers. Update canceled.", newProduct.Name));
+
+                if (checkIfAccPresent && accCount == 0)
+                    return new ConflictObjectResult("Debit Card cannot be added without having an account. Update canceled.");
+
+                await _customBundlesRepository.UpdateProductInCustomBundleAsync(customBundleId, oldProduct.ProductId, newProduct.ProductId);
+
+                return new OkResult();
             }
+            catch
+            {
+                return new ConflictResult();
+            }
+        }
 
-            if (accountCount > 1)
-                return new BadRequestResult();
-            else if (checkIfAccPresent && accountCount == 0)
-                return new BadRequestResult();
+        public async Task<IActionResult> DeleteProductInCustomBundleAsync(int customBundleId, string productName)
+        {
+            try
+            {
+                var p = await _productsRepository.GetProductAsync(productName);
 
-            return new OkResult();
+                if (p != null)
+                {
+                    await _customBundlesRepository.DeleteProductInCustomBundleAsync(customBundleId, p.ProductId);
+
+                    return new OkResult();
+                }
+                else
+                {
+                    return new NotFoundResult();
+                }
+            }
+            catch
+            {
+                return new ConflictResult();
+            }
+        }
+
+        public async Task<IActionResult> PostValidateCustomBundle(CustomBundleViewModel cbvm, QuestionViewModel qvm)
+        {
+            try
+            {
+                var products = cbvm.Products;
+
+                int accountCount = 0;
+                bool checkIfAccPresent = false;
+
+                bool isConflictResult = false;
+
+                List<string> errorMessages = new List<string>();
+
+                foreach (var p in products)
+                {
+                    isConflictResult = false;
+
+                    switch (p.Name)
+                    {
+                        case "Current Account":
+                            if (qvm.Income <= 0 || qvm.Age <= 17)
+                                isConflictResult = true;
+                            accountCount++;
+                            break;
+                        case "Current Account Plus":
+                            if (qvm.Income <= 40000 || qvm.Age <= 17)
+                                isConflictResult = true;
+                            accountCount++;
+                            break;
+                        case "Junior Saver Account":
+                            if (qvm.Age >= 18)
+                                isConflictResult = true;
+                            accountCount++;
+                            break;
+                        case "Student Account":
+                            if (!qvm.IsStudent || qvm.Age <= 17)
+                                isConflictResult = true;
+                            accountCount++;
+                            break;
+                        case "Debit Card":
+                            checkIfAccPresent = true;
+                            break;
+                        case "Credit Card":
+                            if (qvm.Income <= 12000 || qvm.Age <= 17)
+                                isConflictResult = true;
+                            break;
+                        case "Gold Credit Card":
+                            if (qvm.Income <= 40000 || qvm.Age <= 17)
+                                isConflictResult = true;
+                            break;
+                    }
+
+                    if (isConflictResult)
+                        errorMessages.Add(String.Format("{0} product is not valid for selected answers", p.Name));
+                }
+
+                if (errorMessages.Count != 0)
+                    return new ConflictObjectResult(errorMessages);
+
+                if (accountCount > 1)
+                    return new ConflictObjectResult("Too many accounts: only one account can be in a bundle");
+                else if (checkIfAccPresent && accountCount == 0)
+                    return new ConflictObjectResult("Debit Card cannot be added without having an account");
+
+                return new OkResult();
+            }
+            catch
+            {
+                return new BadRequestResult();
+            }
         }
     }
 }

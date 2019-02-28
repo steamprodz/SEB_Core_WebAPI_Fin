@@ -18,7 +18,6 @@ namespace SEB_Core_WebAPI.Repositories
             _context = context;
         }
 
-
         public async Task<IEnumerable<Bundle>> GetAllBundlesAsync()
         {
             return await _context.Bundles.ToListAsync();
@@ -31,29 +30,16 @@ namespace SEB_Core_WebAPI.Repositories
 
         public async Task<IEnumerable<Product>> GetBundleProductsAsync(int bundleId)
         {
-            //Bundle bundle = await _context.Bundles.Where(b => b.BundleId == bundleId).FirstOrDefaultAsync();
-
-            //List<Bundle_Product> bundleProducts = await _context.Bundle_Products.Where(bp => bp.Bundle_BundleId == bundleId).Join(_context.Products, (bp, p) => bp.Product)
-
             List<Product> products = new List<Product>();
 
             try
             {
-                //var sss = _context.Bundle_Products.Where(bp => bp.Bundle_BundleId == bundleId).FirstOrDefault();
-
                 var query =
                     from bundleProduct in _context.Bundle_Products
                     where bundleProduct.Bundle_BundleId == bundleId
                     join product in _context.Products on bundleProduct.Product_ProductId equals product.ProductId into gj
                     from subproduct in gj.DefaultIfEmpty()
                     select new { Id = subproduct.ProductId, Name = subproduct.Name };
-
-                
-
-                //foreach (var item in query)
-                //{
-                //    products.Add(new Product { ProductId = item.Id, Name = item.Name });
-                //}
 
                 await query.ForEachAsync(p => products.Add(new Product { ProductId = p.Id, Name = p.Name }));
 
@@ -62,13 +48,6 @@ namespace SEB_Core_WebAPI.Repositories
             { }
 
             return products;
-
-            //List<Product> products = new List<Product>();
-
-            //foreach (var item in bundleProducts)
-            //{
-            //    products.Add(await _context.Products.Where(p => p.ProductId == item.Product_ProductId).ToListAsync());
-            //}
         }
 
         public async Task<Bundle> FindBundleAsync(string name)

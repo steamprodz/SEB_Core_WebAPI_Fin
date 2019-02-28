@@ -18,10 +18,9 @@ namespace SEB_Core_WebAPI.Repositories
             _context = context;
         }
 
-
-        public async Task<IEnumerable<Bundle>> GetAllCustomBundlesAsync()
+        public async Task<IEnumerable<CustomBundle>> GetAllCustomBundlesAsync()
         {
-            return await _context.Bundles.ToListAsync();
+            return await _context.CustomBundles.ToListAsync();
         }
 
         public async Task<CustomBundle> GetCustomBundleAsync(int customBundleId)
@@ -31,29 +30,16 @@ namespace SEB_Core_WebAPI.Repositories
 
         public async Task<IEnumerable<Product>> GetCustomBundleProductsAsync(int customBundleId)
         {
-            //Bundle bundle = await _context.Bundles.Where(b => b.BundleId == bundleId).FirstOrDefaultAsync();
-
-            //List<Bundle_Product> bundleProducts = await _context.Bundle_Products.Where(bp => bp.Bundle_BundleId == bundleId).Join(_context.Products, (bp, p) => bp.Product)
-
             List<Product> products = new List<Product>();
 
             try
             {
-                //var sss = _context.Bundle_Products.Where(bp => bp.Bundle_BundleId == bundleId).FirstOrDefault();
-
                 var query =
                     from customBundle_Products in _context.CustomBundle_Products
                     where customBundle_Products.CustomBundleId == customBundleId
                     join product in _context.Products on customBundle_Products.ProductId equals product.ProductId into gj
                     from subproduct in gj.DefaultIfEmpty()
                     select new { Id = subproduct.ProductId, Name = subproduct.Name };
-
-                
-
-                //foreach (var item in query)
-                //{
-                //    products.Add(new Product { ProductId = item.Id, Name = item.Name });
-                //}
 
                 await query.ForEachAsync(p => products.Add(new Product { ProductId = p.Id, Name = p.Name }));
 
@@ -62,19 +48,7 @@ namespace SEB_Core_WebAPI.Repositories
             { }
 
             return products;
-
-            //List<Product> products = new List<Product>();
-
-            //foreach (var item in bundleProducts)
-            //{
-            //    products.Add(await _context.Products.Where(p => p.ProductId == item.Product_ProductId).ToListAsync());
-            //}
         }
-
-        //public async Task<Bundle> FindCustomBundleAsync(string name)
-        //{
-        //    return await _context.Bundles.Where(b => b.Name == name).FirstOrDefaultAsync();
-        //}
 
         public async Task<CustomBundle> DeleteCustomBundleAsync(int bundleId)
         {
@@ -92,9 +66,16 @@ namespace SEB_Core_WebAPI.Repositories
 
         public async Task<CustomBundle> FindCustomBundle(Question question)
         {
+            CustomBundle customBundle = null;
+
             var q = await _context.Questions.Where(qq => qq.Age == question.Age && qq.IsStudent == question.IsStudent && qq.Income == question.Income).FirstOrDefaultAsync();
 
-            return await _context.CustomBundles.Where(cb => cb.QuestionId == q.QuestionId).FirstOrDefaultAsync();
+            if (q != null)
+            {
+                customBundle = await _context.CustomBundles.Where(cb => cb.QuestionId == q.QuestionId).FirstOrDefaultAsync();
+            }
+
+            return customBundle;
         }
 
         public async Task<CustomBundle> FindCustomBundleAsync(int questionId)
@@ -120,26 +101,34 @@ namespace SEB_Core_WebAPI.Repositories
 
         public async Task<CustomBundle_Product> UpdateProductInCustomBundleAsync(int customBundleId, int oldProductId, int newProductId)
         {
+            Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<CustomBundle_Product> cb_p = null;
+
             var cb_product = await _context.CustomBundle_Products.Where(cbp => cbp.CustomBundleId == customBundleId && cbp.ProductId == oldProductId).FirstOrDefaultAsync();
 
-            //_context.Entry(cb_product).State = EntityState.Modified;
+            if (cb_product != null)
+            {
+                cb_p = _context.CustomBundle_Products.Update(cb_product);
 
-            var cb_p = _context.CustomBundle_Products.Update(cb_product);
+                cb_p.Entity.ProductId = newProductId;
 
-            cb_p.Entity.ProductId = newProductId;
-
-            await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
+            }
 
             return cb_p.Entity;
         }
 
         public async Task DeleteProductInCustomBundleAsync(int customBundleId, int productId)
         {
+            Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<CustomBundle_Product> cb_p = null;
+
             var cb_product = await _context.CustomBundle_Products.Where(cbp => cbp.CustomBundleId == customBundleId && cbp.ProductId == productId).FirstOrDefaultAsync();
 
-            var cb_p = _context.CustomBundle_Products.Remove(cb_product);
+            if (cb_product != null)
+            {
+                cb_p = _context.CustomBundle_Products.Remove(cb_product);
 
-            await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

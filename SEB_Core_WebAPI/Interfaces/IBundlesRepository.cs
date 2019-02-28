@@ -10,7 +10,6 @@ namespace SEB_Core_WebAPI.Interfaces
         Task<Bundle> GetBundleAsync(int BundleId);
         Task<Bundle> FindBundleAsync(string name);
         Task<Bundle> DeleteBundleAsync(int BundleId);
-
         Task<IEnumerable<Product>> GetBundleProductsAsync(int bundleId);
     }
 }

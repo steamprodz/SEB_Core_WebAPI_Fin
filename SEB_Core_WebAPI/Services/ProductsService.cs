@@ -20,37 +20,10 @@ namespace SEB_Core_WebAPI.Services
             _productsRepository = productsRepository;
         }
 
-        //public async Task<IActionResult> FindProductsAsync(string sku)
-        //{
-        //    try
-        //    {
-        //        IEnumerable<Product> products = await _productsRepository.FindProductsAsync(sku);
-
-        //        if (products != null)
-        //        {
-        //            return new OkObjectResult(products.Select(p => new ProductViewModel()
-        //            {
-        //                Id = p.ProductId,
-        //                Sku = p.Sku.Trim(),
-        //                Name = p.Name.Trim()
-        //            }
-        //            ));
-        //        }
-        //        else
-        //        {
-        //            return new NotFoundResult();
-        //        }
-        //    }
-        //    catch
-        //    {
-        //        return new ConflictResult();
-        //    }
-        //}
-
         public async Task<IActionResult> GetAllProductsAsync()
         {
-            //try
-            //{
+            try
+            {
                 IEnumerable<Product> products = await _productsRepository.GetAllProductsAsync();
 
                 if (products != null)
@@ -58,9 +31,7 @@ namespace SEB_Core_WebAPI.Services
                     return new OkObjectResult(products.Select(p => new ProductViewModel()
                     {
                         Id = p.ProductId,
-                        Name = p.Name //.ToEnum(),
-                        //Sku = p.Sku.Trim(),
-                        //Name = p.Name.Trim()
+                        Name = p.Name
                     }
                     ));
                 }
@@ -68,17 +39,17 @@ namespace SEB_Core_WebAPI.Services
                 {
                     return new NotFoundResult();
                 }
-            //}
-            //catch
-            //{
-            //    return new ConflictResult();
-            //}
+            }
+            catch
+            {
+                return new ConflictResult();
+            }
         }
 
         public async Task<IActionResult> GetProductAsync(int productId)
         {
-            //try
-            //{
+            try
+            {
                 Product product = await _productsRepository.GetProductAsync(productId);
 
                 if (product != null)
@@ -86,26 +57,24 @@ namespace SEB_Core_WebAPI.Services
                     return new OkObjectResult(new ProductViewModel()
                     {
                         Id = product.ProductId,
-                        Name = product.Name //.ToEnum()
-                        //Sku = product.Sku.Trim(),
-                        //Name = product.Name.Trim()
+                        Name = product.Name
                     });
                 }
                 else
                 {
                     return new NotFoundResult();
                 }
-            //}
-            //catch
-            //{
-            //    return new ConflictResult();
-            //}
+            }
+            catch
+            {
+                return new ConflictResult();
+            }
         }
 
         public async Task<IActionResult> DeleteProductAsync(int productId)
         {
-            //try
-            //{
+            try
+            {
                 Product product = await _productsRepository.DeleteProductAsync(productId);
 
                 if (product != null)
@@ -113,20 +82,18 @@ namespace SEB_Core_WebAPI.Services
                     return new OkObjectResult(new ProductViewModel()
                     {
                         Id = product.ProductId,
-                        Name = product.Name //.ToEnum()
-                        //Sku = product.Sku.Trim(),
-                        //Name = product.Name.Trim()
+                        Name = product.Name
                     });
                 }
                 else
                 {
                     return new NotFoundResult();
                 }
-            //}
-            //catch
-            //{
-            //    return new ConflictResult();
-            //}
+            }
+            catch
+            {
+                return new ConflictResult();
+            }
         }
     }
 }

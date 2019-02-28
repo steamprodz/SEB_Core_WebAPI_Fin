@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SEB_Core_WebAPI.Interfaces;
 using SEB_Core_WebAPI.Models;
+using SEB_Core_WebAPI.ViewModels;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -35,26 +36,12 @@ namespace SEB_Core_WebAPI.Controllers
             return await _bundlesService.GetBundleAsync(id);
         }
 
-        // GET api/bundles/recommended/5
-        [HttpGet("recommended/{questionId}")]
-        public async Task<IActionResult> GetRecommendedBundleAsync(int questionId)
-        {
-            return await _bundlesService.GetRecommendedBundleAsync(questionId);
-        }
-
         // POST api/bundles
-        [HttpPost]
-        public async Task<IActionResult> PostRecommendedBundleAsync([FromBody]Question question)
-        {
-            return await _bundlesService.PostRecommendedBundleAsync(question);
-        }
-
-        // POST api/bundles/addproduct
-        [HttpPost("addproduct")]
-        public async Task<IActionResult> PostAddBundleAsync([FromBody]Question question)
-        {
-            return await _bundlesService.PostRecommendedBundleAsync(question);
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> PostAddBundleAsync([FromBody]BundleViewModel bundleViewModel)
+        //{
+        //    return await _bundlesService.PostAddBundleAsync(bundleViewModel);
+        //}
 
         //// POST api/bundles
         //[HttpPost]
@@ -62,17 +49,17 @@ namespace SEB_Core_WebAPI.Controllers
         //{
         //}
 
-        // PUT api/bundles/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
+        //// PUT api/bundles/5
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody]string value)
+        //{
+        //}
 
-        // DELETE api/bundles/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBundleAsync(int id)
-        {
-            return await _bundlesService.DeleteBundleAsync(id);
-        }
+        //// DELETE api/bundles/5
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteBundleAsync(int id)
+        //{
+        //    return await _bundlesService.DeleteBundleAsync(id);
+        //}
     }
 }

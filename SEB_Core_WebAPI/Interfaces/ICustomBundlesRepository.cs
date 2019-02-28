@@ -6,11 +6,9 @@ namespace SEB_Core_WebAPI.Interfaces
 {
     public interface ICustomBundlesRepository
     {
-        Task<IEnumerable<Bundle>> GetAllCustomBundlesAsync();
+        Task<IEnumerable<CustomBundle>> GetAllCustomBundlesAsync();
         Task<CustomBundle> GetCustomBundleAsync(int bundleId);
-        //Task<Bundle> FindCustomBundleAsync(string name);
         Task<CustomBundle> DeleteCustomBundleAsync(int bundleId);
-
         Task<IEnumerable<Product>> GetCustomBundleProductsAsync(int bundleId);
 
         Task<CustomBundle> FindCustomBundleAsync(int questionId);
