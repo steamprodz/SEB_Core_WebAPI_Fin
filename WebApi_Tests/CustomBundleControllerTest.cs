@@ -9,7 +9,6 @@ using SEB_Core_WebAPI.ViewModels;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using WebApi_Tests.FakeServices;
 using Xunit;
 
 namespace WebApi_Tests

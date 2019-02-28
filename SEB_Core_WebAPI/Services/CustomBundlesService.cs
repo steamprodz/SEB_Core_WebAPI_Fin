@@ -405,63 +405,6 @@ namespace SEB_Core_WebAPI.Services
             }
         }
 
-        private async Task<IActionResult> ValidateNewProduct(IEnumerable<Product> products, Question question, Product newProduct)
-        {
-            // Check if such product is already in bundle
-            var sameProduct = products.Where(pp => pp.ProductId == newProduct.ProductId);
-            if (sameProduct != null)
-                return new BadRequestResult();
-
-            // Check if there no more than 1 Account product
-            var pt = await _productsRepository.GetProductTypeAsync(newProduct.ProductId);
-
-            if (pt.TypeName == "Account")
-            {
-                var productAcc = products.Where(pp => pp.ProductTypeId == pt.Id).FirstOrDefault();
-
-                if (productAcc != null)
-                    return new BadRequestResult();
-            }
-
-            int accCount = products.Count(pp => pp.ProductTypeId == pt.Id);
-            bool checkIfAccPresent = false;
-
-            switch (newProduct.Name)
-            {
-                case "Current Account":
-                    if (question.Income <= 0 || question.Age <= 17)
-                        return new BadRequestResult();
-                    break;
-                case "Current Account Plus":
-                    if (question.Income <= 40000 || question.Age <= 17)
-                        return new BadRequestResult();
-                    break;
-                case "Junior Saver Account":
-                    if (question.Age >= 18)
-                        return new BadRequestResult();
-                    break;
-                case "Student Account":
-                    if (!question.IsStudent || question.Age <= 17)
-                        return new BadRequestResult();
-                    break;
-                case "Debit Card":
-                    checkIfAccPresent = true;
-                    break;
-                case "Credit Card":
-                    if (question.Income <= 12000 || question.Age <= 17)
-                        return new BadRequestResult();
-                    break;
-                case "Gold Credit Card":
-                    if (question.Income <= 40000 || question.Age <= 17)
-                        return new BadRequestResult();
-                    break;
-            }
-
-            if (checkIfAccPresent && accCount == 0)
-                return new BadRequestResult();
-
-            return new OkResult();
-        }
 
         public async Task<IActionResult> PutUpdateProductInCustomBundleAsync(int customBundleId, string oldProductName, string newProductName)
         {
