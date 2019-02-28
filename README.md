@@ -5,3 +5,8 @@ SEB.bak - SQLSERVER database dump file
 Main controller: CustomBundlesController
 
 Other controllers are for testing purpose
+
+API:
+/api/values - default
+
+/api/custombundles - working
