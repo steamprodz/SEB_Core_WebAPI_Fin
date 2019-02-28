@@ -17,5 +17,7 @@ namespace SEB_Core_WebAPI.Interfaces
 
         Task<CustomBundle> AddCustomBundleAsync(int questionId, int defaultBundleId);
         Task<CustomBundle_Product> AddProductToCustomBundleAsync(int customBundleId, int productId);
+        Task<CustomBundle_Product> UpdateProductInCustomBundleAsync(int customBundleId, int oldProductId, int newProductId);
+        Task DeleteProductInCustomBundleAsync(int customBundleId, int productId);
     }
 }

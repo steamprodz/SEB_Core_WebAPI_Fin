@@ -60,23 +60,18 @@ namespace SEB_Core_WebAPI.Controllers
             return await _customBundlesService.PostValidateCustomBundle(vvm.CustomBundle, vvm.Question);
         }
 
-        //// POST api/bundles
-        //[HttpPost]
-        //public void Post([FromBody]string value)
-        //{
-        //}
-
-        // PUT api/bundles/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        // PUT api/custombundles/updateproduct
+        [HttpPut("updateproduct")]
+        public async Task<IActionResult> PutUpdateProductInCustomBundleAsync(UpdateCustomBundleProductViewModel model)
         {
+            return await _customBundlesService.PutUpdateProductInCustomBundleAsync(model.CustomBundleId, model.OldProductName, model.NewProductName);
         }
 
-        // DELETE api/bundles/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBundleAsync(int id)
+        // DELETE api/custombundles/deleteproduct
+        [HttpDelete("deleteproduct")]
+        public async Task<IActionResult> PutDeleteProductInCustomBundleAsync(DeleteCustomBundleProductViewModel model)
         {
-            return await _customBundlesService.DeleteBundleAsync(id);
+            return await _customBundlesService.DeleteProductInCustomBundleAsync(model.CustomBundleId, model.ProductName);
         }
     }
 }

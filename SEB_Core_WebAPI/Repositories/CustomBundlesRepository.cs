@@ -117,5 +117,29 @@ namespace SEB_Core_WebAPI.Repositories
 
             return cb_p.Entity;
         }
+
+        public async Task<CustomBundle_Product> UpdateProductInCustomBundleAsync(int customBundleId, int oldProductId, int newProductId)
+        {
+            var cb_product = await _context.CustomBundle_Products.Where(cbp => cbp.CustomBundleId == customBundleId && cbp.ProductId == oldProductId).FirstOrDefaultAsync();
+
+            //_context.Entry(cb_product).State = EntityState.Modified;
+
+            var cb_p = _context.CustomBundle_Products.Update(cb_product);
+
+            cb_p.Entity.ProductId = newProductId;
+
+            await _context.SaveChangesAsync();
+
+            return cb_p.Entity;
+        }
+
+        public async Task DeleteProductInCustomBundleAsync(int customBundleId, int productId)
+        {
+            var cb_product = await _context.CustomBundle_Products.Where(cbp => cbp.CustomBundleId == customBundleId && cbp.ProductId == productId).FirstOrDefaultAsync();
+
+            var cb_p = _context.CustomBundle_Products.Remove(cb_product);
+
+            await _context.SaveChangesAsync();
+        }
     }
 }

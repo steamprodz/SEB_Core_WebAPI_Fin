@@ -12,6 +12,6 @@ namespace SEB_Core_WebAPI.Interfaces
         Task<Product> DeleteProductAsync(int productId);
 
         Task<Product> GetProductAsync(string productName);
-        Task<ProductType> GetProductTypeAsync(string productName);
+        Task<ProductType> GetProductTypeAsync(int productId);
     }
 }

@@ -33,9 +33,9 @@ namespace SEB_Core_WebAPI.Repositories
             return await _context.Products.Where(p => p.Name == productName).FirstOrDefaultAsync();
         }
 
-        public async Task<ProductType> GetProductTypeAsync(string productName)
+        public async Task<ProductType> GetProductTypeAsync(int productId)
         {
-            var product = await _context.Products.Where(p => p.Name == productName).FirstOrDefaultAsync();
+            var product = await _context.Products.Where(p => p.ProductId == productId).FirstOrDefaultAsync();
 
             return await _context.ProductTypes.Where(pt => pt.Id == product.ProductTypeId).FirstOrDefaultAsync();
         }

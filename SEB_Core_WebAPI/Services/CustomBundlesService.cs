@@ -434,36 +434,194 @@ namespace SEB_Core_WebAPI.Services
 
         public async Task<IActionResult> PostAddProductToBundleAsync(int customBundleId, string productName)
         {
-            CustomBundle customBundle = await _customBundlesRepository.GetCustomBundleAsync(customBundleId);
+            var cb = await _customBundlesRepository.GetCustomBundleAsync(customBundleId);
+            var q = await _questionsRepository.GetQuestionAsync(cb.QuestionId);
+            var p = await _productsRepository.GetProductAsync(productName);
+            var products = await _customBundlesRepository.GetCustomBundleProductsAsync(customBundleId);
 
-            //Bundle bundle = await _bundlesRepository.GetBundleAsync(customBundle.BundleId);
+            // Check if such product is already in bundle
+            var sameProduct = products.Where(pp => pp.ProductId == p.ProductId);
+            if (sameProduct != null)
+                return new BadRequestResult();
 
-            var products = await _bundlesRepository.GetBundleProductsAsync(customBundle.BundleId);
+            // Check if there no more than 1 Account product
+            var pt = await _productsRepository.GetProductTypeAsync(p.ProductId);
 
-            //_productsRepository.
-            
-
-            var productType = await _productsRepository.GetProductTypeAsync(productName);
-
-            if (productType.TypeName == "Account")
+            if (pt.TypeName == "Account")
             {
-                var accountProduct = products.Where(p => p.ProductTypeId == productType.Id).FirstOrDefault();
+                var productAcc = products.Where(pp => pp.ProductTypeId == pt.Id).FirstOrDefault();
 
-                if (accountProduct != null)
-                    return new ForbidResult();
+                if (productAcc != null)
+                    return new BadRequestResult();
             }
 
-            var sameProduct = products.Where(p => p.Name == productName).FirstOrDefault();
+            int accCount = products.Count(pp => pp.ProductTypeId == pt.Id);
+            bool checkIfAccPresent = false;
 
-            if (sameProduct == null)
+            switch (p.Name)
             {
-                var product = await _productsRepository.GetProductAsync(productName);
-                _customBundlesRepository.AddProductToCustomBundleAsync(customBundleId, product.ProductId);
-
-                return await this.GetCustomBundleAsync(customBundleId);
+                case "Current Account":
+                    if (q.Income <= 0 || q.Age <= 17)
+                        return new BadRequestResult();
+                    break;
+                case "Current Account Plus":
+                    if (q.Income <= 40000 || q.Age <= 17)
+                        return new BadRequestResult();
+                    break;
+                case "Junior Saver Account":
+                    if (q.Age >= 18)
+                        return new BadRequestResult();
+                    break;
+                case "Student Account":
+                    if (!q.IsStudent || q.Age <= 17)
+                        return new BadRequestResult();
+                    break;
+                case "Debit Card":
+                    checkIfAccPresent = true;
+                    break;
+                case "Credit Card":
+                    if (q.Income <= 12000 || q.Age <= 17)
+                        return new BadRequestResult();
+                    break;
+                case "Gold Credit Card":
+                    if (q.Income <= 40000 || q.Age <= 17)
+                        return new BadRequestResult();
+                    break;
             }
 
-            return new ConflictResult();
+            if (checkIfAccPresent && accCount == 0)
+                return new BadRequestResult();
+
+            return new OkResult();
+        }
+
+        private async Task<IActionResult> ValidateNewProduct(IEnumerable<Product> products, Question question, Product newProduct)
+        {
+            // Check if such product is already in bundle
+            var sameProduct = products.Where(pp => pp.ProductId == newProduct.ProductId);
+            if (sameProduct != null)
+                return new BadRequestResult();
+
+            // Check if there no more than 1 Account product
+            var pt = await _productsRepository.GetProductTypeAsync(newProduct.ProductId);
+
+            if (pt.TypeName == "Account")
+            {
+                var productAcc = products.Where(pp => pp.ProductTypeId == pt.Id).FirstOrDefault();
+
+                if (productAcc != null)
+                    return new BadRequestResult();
+            }
+
+            int accCount = products.Count(pp => pp.ProductTypeId == pt.Id);
+            bool checkIfAccPresent = false;
+
+            switch (newProduct.Name)
+            {
+                case "Current Account":
+                    if (question.Income <= 0 || question.Age <= 17)
+                        return new BadRequestResult();
+                    break;
+                case "Current Account Plus":
+                    if (question.Income <= 40000 || question.Age <= 17)
+                        return new BadRequestResult();
+                    break;
+                case "Junior Saver Account":
+                    if (question.Age >= 18)
+                        return new BadRequestResult();
+                    break;
+                case "Student Account":
+                    if (!question.IsStudent || question.Age <= 17)
+                        return new BadRequestResult();
+                    break;
+                case "Debit Card":
+                    checkIfAccPresent = true;
+                    break;
+                case "Credit Card":
+                    if (question.Income <= 12000 || question.Age <= 17)
+                        return new BadRequestResult();
+                    break;
+                case "Gold Credit Card":
+                    if (question.Income <= 40000 || question.Age <= 17)
+                        return new BadRequestResult();
+                    break;
+            }
+
+            if (checkIfAccPresent && accCount == 0)
+                return new BadRequestResult();
+
+            return new OkResult();
+        }
+
+        public async Task<IActionResult> PutUpdateProductInCustomBundleAsync(int customBundleId, string oldProductName, string newProductName)
+        {
+            var cb = await _customBundlesRepository.GetCustomBundleAsync(customBundleId);
+            var q = await _questionsRepository.GetQuestionAsync(cb.QuestionId);
+            var products = await _customBundlesRepository.GetCustomBundleProductsAsync(customBundleId);
+
+            var oldProduct = products.Where(pp => pp.Name == oldProductName).FirstOrDefault();
+            var newProduct = products.Where(pp => pp.Name == newProductName).FirstOrDefault();
+
+            // Check if there no more than 1 Account product
+            var pt = await _productsRepository.GetProductTypeAsync(newProduct.ProductId);
+
+            if (pt.TypeName == "Account")
+            {
+                var productAcc = products.Where(pp => pp.ProductTypeId == pt.Id).FirstOrDefault();
+
+                if (productAcc != null)
+                    return new BadRequestResult();
+            }
+
+            int accCount = products.Count(pp => pp.ProductTypeId == pt.Id);
+            bool checkIfAccPresent = false;
+
+            switch (newProduct.Name)
+            {
+                case "Current Account":
+                    if (q.Income <= 0 || q.Age <= 17)
+                        return new BadRequestResult();
+                    break;
+                case "Current Account Plus":
+                    if (q.Income <= 40000 || q.Age <= 17)
+                        return new BadRequestResult();
+                    break;
+                case "Junior Saver Account":
+                    if (q.Age >= 18)
+                        return new BadRequestResult();
+                    break;
+                case "Student Account":
+                    if (!q.IsStudent || q.Age <= 17)
+                        return new BadRequestResult();
+                    break;
+                case "Debit Card":
+                    checkIfAccPresent = true;
+                    break;
+                case "Credit Card":
+                    if (q.Income <= 12000 || q.Age <= 17)
+                        return new BadRequestResult();
+                    break;
+                case "Gold Credit Card":
+                    if (q.Income <= 40000 || q.Age <= 17)
+                        return new BadRequestResult();
+                    break;
+            }
+
+            if (checkIfAccPresent && accCount == 0)
+                return new BadRequestResult();
+
+            await _customBundlesRepository.UpdateProductInCustomBundleAsync(customBundleId, oldProduct.ProductId, newProduct.ProductId);
+
+            return new OkResult();
+        }
+
+        public async Task<IActionResult> DeleteProductInCustomBundleAsync(int customBundleId, string productName)
+        {
+            var p = await _productsRepository.GetProductAsync(productName);
+
+            await _customBundlesRepository.DeleteProductInCustomBundleAsync(customBundleId, p.ProductId);
+
+            return new OkResult();
         }
 
         public async Task<IActionResult> PostValidateCustomBundle(CustomBundleViewModel cbvm, QuestionViewModel qvm)
@@ -474,7 +632,7 @@ namespace SEB_Core_WebAPI.Services
             var products = cbvm.Products;
 
             int accountCount = 0;
-            bool checkDebitCard = false;
+            bool checkIfAccPresent = false;
 
             foreach (var p in products)
             {
@@ -501,7 +659,7 @@ namespace SEB_Core_WebAPI.Services
                         accountCount++;
                         break;
                     case "Debit Card":
-                        checkDebitCard = true;
+                        checkIfAccPresent = true;
                         break;
                     case "Credit Card":
                         if (qvm.Income <= 12000 || qvm.Age <= 17)
@@ -516,7 +674,7 @@ namespace SEB_Core_WebAPI.Services
 
             if (accountCount > 1)
                 return new BadRequestResult();
-            else if (checkDebitCard && accountCount == 0)
+            else if (checkIfAccPresent && accountCount == 0)
                 return new BadRequestResult();
 
             return new OkResult();
