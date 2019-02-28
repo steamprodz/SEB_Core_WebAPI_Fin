@@ -8,11 +8,14 @@ namespace SEB_Core_WebAPI.Interfaces
     {
         Task<IEnumerable<Bundle>> GetAllCustomBundlesAsync();
         Task<CustomBundle> GetCustomBundleAsync(int bundleId);
-        Task<Bundle> FindCustomBundleAsync(string name);
-        Task<Bundle> DeleteCustomBundleAsync(int bundleId);
+        //Task<Bundle> FindCustomBundleAsync(string name);
+        Task<CustomBundle> DeleteCustomBundleAsync(int bundleId);
 
         Task<IEnumerable<Product>> GetCustomBundleProductsAsync(int bundleId);
 
-        void AddProductToCustomBundleAsync(int customBundleId, int productId);
+        Task<CustomBundle> FindCustomBundleAsync(int questionId);
+
+        Task<CustomBundle> AddCustomBundleAsync(int questionId, int defaultBundleId);
+        Task<CustomBundle_Product> AddProductToCustomBundleAsync(int customBundleId, int productId);
     }
 }

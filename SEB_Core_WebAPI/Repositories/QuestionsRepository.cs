@@ -23,9 +23,26 @@ namespace SEB_Core_WebAPI.Repositories
             return await _context.Questions.ToListAsync();
         }
 
+
+        // Get question by Id
         public async Task<Question> GetQuestionAsync(int questionId)
         {
             return await _context.Questions.Where(q => q.QuestionId == questionId).FirstOrDefaultAsync();
+        }
+
+        // Get question by params
+        public async Task<Question> GetQuestionAsync(int age, bool isStudent, long income)
+        {
+            return await _context.Questions.Where(q => q.Age == age && q.IsStudent == isStudent && q.Income == income).FirstOrDefaultAsync();
+        }
+
+        // Create new record
+        public async Task<Question> AddQuestionAsync(int age, bool isStudent, long income)
+        {
+            var q = await _context.Questions.AddAsync(new Question { Age = age, IsStudent = isStudent, Income = income });
+            await _context.SaveChangesAsync();
+
+            return q.Entity;
         }
 
         public async Task<Question> DeleteQuestionAsync(int questionId)

@@ -71,35 +71,24 @@ namespace SEB_Core_WebAPI.Repositories
             //}
         }
 
-        public async Task<Bundle> FindCustomBundleAsync(string name)
-        {
-            return await _context.Bundles.Where(b => b.Name == name).FirstOrDefaultAsync();
-        }
+        //public async Task<Bundle> FindCustomBundleAsync(string name)
+        //{
+        //    return await _context.Bundles.Where(b => b.Name == name).FirstOrDefaultAsync();
+        //}
 
-        public async Task<Bundle> DeleteCustomBundleAsync(int bundleId)
+        public async Task<CustomBundle> DeleteCustomBundleAsync(int bundleId)
         {
-            Bundle bundle = await GetBundleAsync(bundleId);
+            var cb = await this.GetCustomBundleAsync(bundleId);
 
-            if (bundle != null)
+            if (cb != null)
             {
-                _context.Bundles.Remove(bundle);
-
+                _context.CustomBundles.Remove(cb);
                 await _context.SaveChangesAsync();
             }
 
-            return bundle;
+            return cb;
         }
-
-
-        public async void AddProductToCustomBundleAsync(int customBundleId, int productId)
-        {
-            _context.Bundle_Products.Add(
-                new Bundle_Product { Bundle_BundleId = customBundleId, Product_ProductId = productId });
-
-            await _context.SaveChangesAsync();
-
-            // return 
-        }
+        
 
         public async Task<CustomBundle> FindCustomBundle(Question question)
         {
@@ -108,6 +97,25 @@ namespace SEB_Core_WebAPI.Repositories
             return await _context.CustomBundles.Where(cb => cb.QuestionId == q.QuestionId).FirstOrDefaultAsync();
         }
 
-        public async Task<CustomBundle> CreateCustomBundle(Question question)
+        public async Task<CustomBundle> FindCustomBundleAsync(int questionId)
+        {
+            return await _context.CustomBundles.Where(cb => cb.QuestionId == questionId).FirstOrDefaultAsync();
+        }
+
+        public async Task<CustomBundle> AddCustomBundleAsync(int questionId, int defaultBundleId)
+        {
+            var cb = await _context.CustomBundles.AddAsync(new CustomBundle { BundleId = defaultBundleId, QuestionId = questionId });
+            await _context.SaveChangesAsync();
+
+            return cb.Entity;
+        }
+
+        public async Task<CustomBundle_Product> AddProductToCustomBundleAsync(int customBundleId, int productId)
+        {
+            var cb_p = await _context.CustomBundle_Products.AddAsync(new CustomBundle_Product { CustomBundleId = customBundleId, ProductId = productId });
+            await _context.SaveChangesAsync();
+
+            return cb_p.Entity;
+        }
     }
 }

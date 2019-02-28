@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SEB_Core_WebAPI.Interfaces;
 using SEB_Core_WebAPI.Models;
+using SEB_Core_WebAPI.ViewModels;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -40,6 +41,13 @@ namespace SEB_Core_WebAPI.Controllers
         public async Task<IActionResult> PostAddProductToBundleAsync([FromBody]int customBundleId, string productName)
         {
             return await _customBundlesService.PostAddProductToBundleAsync(customBundleId, productName);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> PostRecommendedBundleAsync([FromBody]QuestionViewModel qvm)
+        {
+            return await _customBundlesService.PostRecommendedBundleAsync(qvm);
         }
 
 

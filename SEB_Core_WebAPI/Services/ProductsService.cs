@@ -58,7 +58,7 @@ namespace SEB_Core_WebAPI.Services
                     return new OkObjectResult(products.Select(p => new ProductViewModel()
                     {
                         Id = p.ProductId,
-                        TypeName = p.Name //.ToEnum(),
+                        Name = p.Name //.ToEnum(),
                         //Sku = p.Sku.Trim(),
                         //Name = p.Name.Trim()
                     }
@@ -86,7 +86,7 @@ namespace SEB_Core_WebAPI.Services
                     return new OkObjectResult(new ProductViewModel()
                     {
                         Id = product.ProductId,
-                        TypeName = product.Name //.ToEnum()
+                        Name = product.Name //.ToEnum()
                         //Sku = product.Sku.Trim(),
                         //Name = product.Name.Trim()
                     });
@@ -113,7 +113,7 @@ namespace SEB_Core_WebAPI.Services
                     return new OkObjectResult(new ProductViewModel()
                     {
                         Id = product.ProductId,
-                        TypeName = product.Name //.ToEnum()
+                        Name = product.Name //.ToEnum()
                         //Sku = product.Sku.Trim(),
                         //Name = product.Name.Trim()
                     });

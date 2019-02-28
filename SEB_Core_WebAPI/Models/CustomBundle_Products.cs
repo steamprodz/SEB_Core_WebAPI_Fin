@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 
 namespace SEB_Core_WebAPI.Models
 {
-    public class CustomBundle
+    public class CustomBundle_Product
     {
         public int CustomBundleId { get; set; }
-        public int BundleId { get; set; }
-        public int QuestionId { get; set; }
+        public int ProductId { get; set; }
     }
 }

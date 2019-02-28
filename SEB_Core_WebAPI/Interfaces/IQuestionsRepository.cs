@@ -9,5 +9,8 @@ namespace SEB_Core_WebAPI.Interfaces
         Task<IEnumerable<Question>> GetAllQuestionsAsync();
         Task<Question> GetQuestionAsync(int questionId);
         Task<Question> DeleteQuestionAsync(int questionId);
+
+        Task<Question> GetQuestionAsync(int age, bool isStudent, long income);
+        Task<Question> AddQuestionAsync(int age, bool isStudent, long income);
     }
 }

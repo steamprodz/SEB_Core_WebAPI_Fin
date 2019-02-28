@@ -97,7 +97,7 @@ namespace SEB_Core_WebAPI.Services
                 productViewModelList.Add(new ProductViewModel()
                 {
                     Id = item.ProductId,
-                    TypeName = item.Name
+                    Name = item.Name
                 });
             }
 
