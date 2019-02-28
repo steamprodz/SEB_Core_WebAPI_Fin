@@ -465,5 +465,61 @@ namespace SEB_Core_WebAPI.Services
 
             return new ConflictResult();
         }
+
+        public async Task<IActionResult> PostValidateCustomBundle(CustomBundleViewModel cbvm, QuestionViewModel qvm)
+        {
+            //var cb = await this.GetCustomBundleAsync(cbvm.Id);
+            //var products = await _customBundlesRepository.GetCustomBundleProductsAsync(cbvm.Id);
+
+            var products = cbvm.Products;
+
+            int accountCount = 0;
+            bool checkDebitCard = false;
+
+            foreach (var p in products)
+            {
+                switch (p.Name)
+                {
+                    case "Current Account":
+                        if (qvm.Income <= 0 || qvm.Age <= 17)
+                            return new BadRequestResult();
+                        accountCount++;
+                        break;
+                    case "Current Account Plus":
+                        if (qvm.Income <= 40000 || qvm.Age <= 17)
+                            return new BadRequestResult();
+                        accountCount++;
+                        break;
+                    case "Junior Saver Account":
+                        if (qvm.Age >= 18)
+                            return new BadRequestResult();
+                        accountCount++;
+                        break;
+                    case "Student Account":
+                        if (!qvm.IsStudent || qvm.Age <= 17)
+                            return new BadRequestResult();
+                        accountCount++;
+                        break;
+                    case "Debit Card":
+                        checkDebitCard = true;
+                        break;
+                    case "Credit Card":
+                        if (qvm.Income <= 12000 || qvm.Age <= 17)
+                            return new BadRequestResult();
+                        break;
+                    case "Gold Credit Card":
+                        if (qvm.Income <= 40000 || qvm.Age <= 17)
+                            return new BadRequestResult();
+                        break;
+                }
+            }
+
+            if (accountCount > 1)
+                return new BadRequestResult();
+            else if (checkDebitCard && accountCount == 0)
+                return new BadRequestResult();
+
+            return new OkResult();
+        }
     }
 }

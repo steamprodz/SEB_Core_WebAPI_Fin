@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using SEB_Core_WebAPI.Interfaces;
 using SEB_Core_WebAPI.Models;
 using SEB_Core_WebAPI.ViewModels;
+using Newtonsoft.Json.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -43,14 +44,21 @@ namespace SEB_Core_WebAPI.Controllers
             return await _customBundlesService.PostAddProductToBundleAsync(customBundleId, productName);
         }
 
-
+        // Post api/custombundles
         [HttpPost]
         public async Task<IActionResult> PostRecommendedBundleAsync([FromBody]QuestionViewModel qvm)
         {
             return await _customBundlesService.PostRecommendedBundleAsync(qvm);
         }
 
+        // Post api/custombundles/validate
+        [HttpPost("validate")]
+        public async Task<IActionResult> PostValidateCustomBundleAsync([FromBody]ValidateViewModel vvm)
+        {
+            //QuestionViewModel qvm = new QuestionViewModel { Age = age, IsStudent = isStudent, Income = income };
 
+            return await _customBundlesService.PostValidateCustomBundle(vvm.CustomBundle, vvm.Question);
+        }
 
         //// POST api/bundles
         //[HttpPost]

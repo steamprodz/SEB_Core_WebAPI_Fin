@@ -24,12 +24,12 @@ namespace SEB_Core_WebAPI.Repositories
             return await _context.Bundles.ToListAsync();
         }
 
-        public async Task<CustomBundle> GetCustomBundleAsync(int bundleId)
+        public async Task<CustomBundle> GetCustomBundleAsync(int customBundleId)
         {
-            return await _context.CustomBundles.Where(b => b.BundleId == bundleId).FirstOrDefaultAsync();
+            return await _context.CustomBundles.Where(b => b.CustomBundleId == customBundleId).FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Product>> GetCustomBundleProductsAsync(int bundleId)
+        public async Task<IEnumerable<Product>> GetCustomBundleProductsAsync(int customBundleId)
         {
             //Bundle bundle = await _context.Bundles.Where(b => b.BundleId == bundleId).FirstOrDefaultAsync();
 
@@ -42,9 +42,9 @@ namespace SEB_Core_WebAPI.Repositories
                 //var sss = _context.Bundle_Products.Where(bp => bp.Bundle_BundleId == bundleId).FirstOrDefault();
 
                 var query =
-                    from bundleProduct in _context.Bundle_Products
-                    where bundleProduct.Bundle_BundleId == bundleId
-                    join product in _context.Products on bundleProduct.Product_ProductId equals product.ProductId into gj
+                    from customBundle_Products in _context.CustomBundle_Products
+                    where customBundle_Products.CustomBundleId == customBundleId
+                    join product in _context.Products on customBundle_Products.ProductId equals product.ProductId into gj
                     from subproduct in gj.DefaultIfEmpty()
                     select new { Id = subproduct.ProductId, Name = subproduct.Name };
 

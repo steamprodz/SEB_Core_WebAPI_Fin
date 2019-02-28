@@ -6,8 +6,8 @@ namespace SEB_Core_WebAPI.ViewModels
 {
     public class CustomBundleViewModel
     {
-        public long Id { get; set; }
-        public long DefaultBundleId { get; set; }
+        public int Id { get; set; }
+        public int DefaultBundleId { get; set; }
         public IEnumerable<ProductViewModel> Products { get; set; }
         //public long QuestionId
     }
