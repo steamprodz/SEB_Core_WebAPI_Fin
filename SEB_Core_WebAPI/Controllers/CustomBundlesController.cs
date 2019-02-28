@@ -55,8 +55,6 @@ namespace SEB_Core_WebAPI.Controllers
         [HttpPost("validate")]
         public async Task<IActionResult> PostValidateCustomBundleAsync([FromBody]ValidateViewModel vvm)
         {
-            //QuestionViewModel qvm = new QuestionViewModel { Age = age, IsStudent = isStudent, Income = income };
-
             return await _customBundlesService.PostValidateCustomBundle(vvm.CustomBundle, vvm.Question);
         }
 

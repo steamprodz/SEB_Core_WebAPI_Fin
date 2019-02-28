@@ -11,9 +11,11 @@ namespace SEB_Core_WebAPI.Controllers
     {
         // GET api/values
         [HttpGet]
-        public IEnumerable<string> Get()
+        public string Get()
         {
-            return new string[] { "value1", "value2" };
+            //return new string[] { "value1", "value2" };
+
+            return "Welcome to Technical task\n\nUse api/custombundles for the main functionality";
         }
 
         // GET api/values/5
